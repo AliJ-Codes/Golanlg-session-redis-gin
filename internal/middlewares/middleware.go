@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"session-redis/internal/session"
 	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 )

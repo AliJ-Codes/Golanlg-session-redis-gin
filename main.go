@@ -5,7 +5,6 @@ import (
 )
 
 func main() {
-	// Redis()
 	r := router.SetupRouter()
 	r.Run("localhost:5000")
 }
