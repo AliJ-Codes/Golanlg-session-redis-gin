@@ -26,6 +26,10 @@ func AuthMiddleware(rdb *redis.Client) gin.HandlerFunc {
 			return
 		}
 		err = session.UpdateTTL(rdb, session_id, time.Hour)
+		if err != nil {
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return 
+		}
 		c.Set("session_id", session_id)
 		c.Set("user_id", val["user_id"])
 		c.Set("role", val["role"])
