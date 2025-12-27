@@ -42,7 +42,7 @@ func LoginHandler(rdb *redis.Client) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		if input.Password != "123" && input.Username != "admin" {
+		if input.Password != "123" || input.Username != "admin" {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"status": "no",
 				"error":  "username or password incorrect",
