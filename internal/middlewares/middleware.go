@@ -1,11 +1,11 @@
 package middlewares
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"net/http"
 	"session-redis/internal/session"
 	"time"
-	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 )
 
 func AuthMiddleware(rdb *redis.Client) gin.HandlerFunc {
@@ -16,18 +16,19 @@ func AuthMiddleware(rdb *redis.Client) gin.HandlerFunc {
 			return
 		}
 		val, err := session.GetSession(rdb, session_id)
-		if err != nil {
-			if err != redis.Nil {
-				c.AbortWithStatus(http.StatusInternalServerError)
-				return
-			}
+		if err == redis.Nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		if err != nil {
+			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
 		err = session.UpdateTTL(rdb, session_id, time.Hour)
 		if err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)
-			return 
+			return
 		}
 		c.Set("session_id", session_id)
 		c.Set("user_id", val["user_id"])

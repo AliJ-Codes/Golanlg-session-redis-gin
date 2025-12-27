@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"session-redis/internal/session"
 	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 )
@@ -55,11 +57,13 @@ func LoginHandler(rdb *redis.Client) gin.HandlerFunc {
 		// END TEST //
 		session_id, err := session.CreateSessionID()
 		if err != nil {
+			fmt.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
 		err = session.SetSession(rdb, session_id, time.Hour*24, user_id, role)
 		if err != nil {
+			fmt.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
